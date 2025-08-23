@@ -1,0 +1,47 @@
+Core Tech Stack
+• Frontend (User Interface):
+o HTML5, CSS3, JavaScript (ES6+)
+o React.js or Vue.js for building responsive, component-based UIs
+o Bootstrap or TailwindCSS for styling (optional)
+• Backend (Application Logic):
+o PHP (Laravel or Symfony) – Used at IME for scalable web applications
+o Node.js (optional) – For asynchronous services or microservices
+o Python – For machine learning pipelines, document parsing, and NLP
+• Database & Storage:
+o MySQL or PostgreSQL – For relational data (e.g., user data, contracts, 
+voyages)
+o Azure Blob Storage or Amazon S3 – For storing uploaded documents (PDFs, 
+Word files)
+• AI / Machine Learning / NLP Tools:
+o Azure Cognitive Services – For OCR, form recognition, and document 
+analysis
+o Azure OpenAI – For summarization, clause matching, and negotiation 
+intelligence
+o spaCy, Transformers (Hugging Face) – For clause extraction and event 
+parsing
+o Scikit-learn / TensorFlow – For building classification or prediction models if o Azure Web Apps, Azure Functions, Azure SQL, Azure Logic Apps
+o GitHub Actions / Azure DevOps – For CI/CD pipeline setup
+System Architecture Overview
+The ideal system architecture should follow a modular and loosely coupled design, 
+ensuring flexibility, maintainability, and scalability:
+1. Client Layer (Frontend)
+• Web app for file uploads, dashboards, data tables, user interaction
+• Communicates via HTTPS/REST APIs with backend services
+2. Application Layer (Backend/API)
+• API endpoints for:
+o Document processing (SoF, CP, Weather)
+o AI-based extraction and negotiation
+o User authentication & session handling
+• Queue system (e.g., Azure Queue Storage or Redis) for background tasks like 
+parsing large documents
+3. Processing & Intelligence Layer
+• Document parsers using OCR/AI models
+• NLP pipelines for event detection and clause mapping
+• Bunker/weather API connectors (Oceanova-specific)
+4. Database & Storage Layer
+• SQL database for structured data (events, charters, routes)
+• Cloud storage for original document uploads and generated outputs
+• Caching layer (Redis or Memcached) for fast retrieval of port/vessel data
+5. Reporting & Export Layer
+• PDF and Excel generation for reports
+• Exportable JSON/CSV formats for integration with third-party systems
