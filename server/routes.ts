@@ -116,18 +116,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const knowledgeBase = await searchMaritimeKnowledge(validatedData.content, analysis.category);
       const conversationHistory = await storage.getMessagesByConversation(req.params.conversationId);
       
-      // For certain categories, use built-in tools instead of AI
+      // For certain categories, perform actual calculations instead of AI
       let aiResponse: string;
       
       if (analysis.category === 'laytime' && validatedData.content.toLowerCase().includes('calculate')) {
-        // Try to extract time information and provide calculation guidance
-        aiResponse = `Based on your laytime question, I can help you calculate this precisely. For accurate laytime calculations, I need:\n\n• Arrival time (when vessel tendered NOR)\n• Completion time (when cargo operations finished)\n• Whether to exclude weekends/holidays\n\nYou can use the Laytime tool in the sidebar for instant calculations, or provide these details and I'll help you interpret the results according to charter party terms.`;
-      } else if (analysis.category === 'distance' && (validatedData.content.toLowerCase().includes('distance') || validatedData.content.toLowerCase().includes('route'))) {
-        aiResponse = `For distance calculations between ports, I can provide precise nautical mile distances and voyage estimates. Use the Distance tool in the sidebar, or tell me the departure and destination ports and I'll calculate:\n\n• Great circle distance in nautical miles\n• Estimated voyage time at different speeds\n• Approximate fuel consumption\n• Route recommendations`;
+        // Try to extract time information and calculate directly
+        const content = validatedData.content.toLowerCase();
+        
+        // Simple pattern matching for common time formats
+        const arrivalMatch = content.match(/arrived.*?(\d{1,2}):(\d{2})|(\d{1,2}):(\d{2}).*?arrived/);
+        const completionMatch = content.match(/completed.*?(\d{1,2}):(\d{2})|finished.*?(\d{1,2}):(\d{2})|(\d{1,2}):(\d{2}).*?completed|(\d{1,2}):(\d{2}).*?finished/);
+        
+        if (arrivalMatch && completionMatch) {
+          // Extract times and assume today/tomorrow based on context
+          const arrivalHour = parseInt(arrivalMatch[1] || arrivalMatch[3]);
+          const arrivalMin = parseInt(arrivalMatch[2] || arrivalMatch[4]);
+          const completionHour = parseInt(completionMatch[1] || completionMatch[3] || completionMatch[5] || completionMatch[7]);
+          const completionMin = parseInt(completionMatch[2] || completionMatch[4] || completionMatch[6] || completionMatch[8]);
+          
+          // Create dates (assuming next day if mentioned)
+          const today = new Date();
+          const arrivalTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), arrivalHour, arrivalMin);
+          let completionTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), completionHour, completionMin);
+          
+          // If completion is before arrival, assume next day
+          if (completionTime <= arrivalTime || content.includes('next day')) {
+            completionTime.setDate(completionTime.getDate() + 1);
+          }
+          
+          const totalMs = completionTime.getTime() - arrivalTime.getTime();
+          const totalHours = Math.round((totalMs / (1000 * 60 * 60)) * 100) / 100;
+          const totalDays = Math.round((totalHours / 24) * 100) / 100;
+          
+          aiResponse = `**Laytime Calculation Results:**\n\n• **Arrival Time:** ${arrivalTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}\n• **Completion Time:** ${completionTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} (+1 day)\n• **Total Laytime:** ${totalHours} hours (${totalDays} days)\n• **Working Days:** ${totalDays} days (excluding any weather delays)\n\n**Maritime Industry Notes:**\n• This calculation assumes continuous operations without weather interruptions\n• For Weather Working Days (WWD), deduct time when cargo operations were suspended due to weather\n• Demurrage applies if this exceeds your charter party's allowed laytime\n• Document all delays with proper notices for accurate settlement`;
+        } else {
+          aiResponse = `I can help calculate laytime, but I need specific times. Please provide:\n\n• **Arrival time** (when vessel tendered Notice of Readiness)\n• **Completion time** (when cargo operations finished)\n\nExample: "Vessel arrived at 14:30 and completed loading at 08:15 the next day"\n\nOnce you provide the times, I'll calculate the exact laytime in hours and days, plus provide guidance on demurrage and charter party implications.`;
+        }
+      } else if (analysis.category === 'distance') {
+        // Extract port names and calculate distance
+        const content = validatedData.content.toLowerCase();
+        const fromPortMatch = content.match(/from\s+([a-zA-Z\s]+?)(?:\s+to|\s+and)/i);
+        const toPortMatch = content.match(/to\s+([a-zA-Z\s]+?)(?:\s|$|[?.])/i);
+        
+        if (fromPortMatch && toPortMatch) {
+          const fromPort = fromPortMatch[1].trim();
+          const toPort = toPortMatch[1].trim();
+          
+          try {
+            const result = calculateDistance(fromPort, toPort);
+            aiResponse = `**Distance Calculation: ${result.fromPort} ↔ ${result.toPort}**\n\n• **Distance:** ${result.distanceNM} nautical miles\n• **Estimated Transit Time:** ${result.estimatedDays} days (at 14 knots average)\n• **Estimated Fuel Consumption:** ${result.fuelConsumption} MT\n\n**Voyage Planning Notes:**\n• Great circle distance calculation\n• Add 10-15% for weather routing and port approach\n• Consider seasonal weather patterns for route optimization\n• Budget additional time for port congestion and pilotage`;
+          } catch (error) {
+            aiResponse = `I can calculate distances between major ports. The ports "${fromPort}" and "${toPort}" might not be in my database. \n\nI have distances for major ports including:\n• **Europe:** Hamburg, Rotterdam, Antwerp, Felixstowe\n• **Asia:** Singapore, Shanghai, Tokyo, Mumbai\n• **Americas:** New York, Santos\n• **Middle East:** Dubai\n\nPlease specify major ports, or use the Distance tool in the sidebar for manual calculations.`;
+          }
+        } else {
+          aiResponse = `I can calculate distances between ports. Please specify both ports clearly:\n\nExample: "What's the distance from Singapore to Dubai?"\n\nI'll provide:\n• Nautical mile distance\n• Estimated voyage time\n• Fuel consumption estimates\n• Route recommendations`;
+        }
       } else if (analysis.category === 'weather') {
-        aiResponse = `For weather information affecting maritime operations, I can provide current conditions and operational guidance. Use the Weather tool in the sidebar for specific locations, or ask about:\n\n• Port weather conditions\n• Impact on cargo operations\n• Weather working days interpretations\n• Operational safety guidelines`;
+        // Extract location and provide weather info
+        const content = validatedData.content.toLowerCase();
+        const locationMatch = content.match(/in\s+([a-zA-Z\s]+?)(?:\s|$|[?.])/i) || 
+                             content.match(/at\s+([a-zA-Z\s]+?)(?:\s|$|[?.])/i) ||
+                             content.match(/weather.*?([a-zA-Z\s]+?)(?:\s|$|[?.])/i);
+        
+        if (locationMatch) {
+          const location = locationMatch[1].trim();
+          const weather = getWeatherConditions(location);
+          
+          aiResponse = `**Weather Conditions - ${location}**\n\n• **Current Condition:** ${weather.condition}\n• **Temperature:** ${weather.temperature}°C\n• **Wind Speed:** ${weather.windSpeed} knots\n• **Visibility:** ${weather.visibility} nautical miles\n\n**Operational Recommendation:**\n${weather.recommendation}\n\n**Maritime Operations Impact:**\n• Container operations: ${weather.windSpeed > 25 ? 'Suspended' : 'Normal'} (limit: 25 knots)\n• Bulk cargo loading: ${weather.condition.includes('Rain') ? 'Weather hold advised' : 'Proceeding normally'}\n• Pilot boarding: ${weather.visibility < 2 ? 'Delayed' : 'Normal'} (minimum: 2 NM visibility)`;
+        } else {
+          aiResponse = `I can provide weather conditions for maritime operations. Please specify a location:\n\nExample: "What's the weather in Hamburg?" or "Weather conditions at Rotterdam"\n\nI'll provide current conditions, operational impacts, and safety recommendations for cargo operations.`;
+        }
       } else if (analysis.category === 'cp_clause') {
-        aiResponse = `For charter party clause interpretation, I can analyze terms and provide legal implications. Use the CP Clauses tool in the sidebar to paste specific clause text, or ask about:\n\n• Laytime and demurrage provisions\n• Weather working days definitions\n• Safe port warranties\n• Cargo handling responsibilities`;
+        // Extract clause text and interpret
+        const content = validatedData.content;
+        const clauseMatch = content.match(/["'](.*?)["']/) || content.match(/clause[:\s]+(.*?)(?:\.|$)/i);
+        
+        if (clauseMatch) {
+          const clauseText = clauseMatch[1];
+          const interpretation = interpretCPClause(clauseText);
+          
+          aiResponse = `**Charter Party Clause Analysis**\n\n**Clause Type:** ${interpretation.clauseType}\n\n**Interpretation:**\n${interpretation.interpretation}\n\n**Key Implications:**\n${interpretation.implications.map(imp => `• ${imp}`).join('\n')}\n\n**Recommendations:**\n${interpretation.recommendations.map(rec => `• ${rec}`).join('\n')}\n\n**Legal Notes:**\n• Ensure compliance with local port customs and regulations\n• Document all relevant circumstances for potential disputes\n• Consider seeking legal advice for complex interpretations`;
+        } else {
+          aiResponse = `I can interpret charter party clauses and provide legal implications. Please provide the specific clause text:\n\nExample: "Interpret this clause: 'Weather Working Days means days when weather permits normal cargo operations'"\n\nI'll analyze:\n• Clause type and meaning\n• Legal implications for both parties\n• Practical recommendations\n• Industry best practices`;
+        }
       } else {
         // For general queries, try AI first, fallback to knowledge base
         aiResponse = await generateMaritimeResponse(validatedData.content, {
