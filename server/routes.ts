@@ -116,13 +116,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const knowledgeBase = await searchMaritimeKnowledge(validatedData.content, analysis.category);
       const conversationHistory = await storage.getMessagesByConversation(req.params.conversationId);
       
-      const aiResponse = await generateMaritimeResponse(validatedData.content, {
-        knowledgeBase,
-        conversationHistory: conversationHistory.map(m => ({
-          role: m.role,
-          content: m.content
-        }))
-      });
+      // For certain categories, use built-in tools instead of AI
+      let aiResponse: string;
+      
+      if (analysis.category === 'laytime' && validatedData.content.toLowerCase().includes('calculate')) {
+        // Try to extract time information and provide calculation guidance
+        aiResponse = `Based on your laytime question, I can help you calculate this precisely. For accurate laytime calculations, I need:\n\n• Arrival time (when vessel tendered NOR)\n• Completion time (when cargo operations finished)\n• Whether to exclude weekends/holidays\n\nYou can use the Laytime tool in the sidebar for instant calculations, or provide these details and I'll help you interpret the results according to charter party terms.`;
+      } else if (analysis.category === 'distance' && (validatedData.content.toLowerCase().includes('distance') || validatedData.content.toLowerCase().includes('route'))) {
+        aiResponse = `For distance calculations between ports, I can provide precise nautical mile distances and voyage estimates. Use the Distance tool in the sidebar, or tell me the departure and destination ports and I'll calculate:\n\n• Great circle distance in nautical miles\n• Estimated voyage time at different speeds\n• Approximate fuel consumption\n• Route recommendations`;
+      } else if (analysis.category === 'weather') {
+        aiResponse = `For weather information affecting maritime operations, I can provide current conditions and operational guidance. Use the Weather tool in the sidebar for specific locations, or ask about:\n\n• Port weather conditions\n• Impact on cargo operations\n• Weather working days interpretations\n• Operational safety guidelines`;
+      } else if (analysis.category === 'cp_clause') {
+        aiResponse = `For charter party clause interpretation, I can analyze terms and provide legal implications. Use the CP Clauses tool in the sidebar to paste specific clause text, or ask about:\n\n• Laytime and demurrage provisions\n• Weather working days definitions\n• Safe port warranties\n• Cargo handling responsibilities`;
+      } else {
+        // For general queries, try AI first, fallback to knowledge base
+        aiResponse = await generateMaritimeResponse(validatedData.content, {
+          knowledgeBase,
+          conversationHistory: conversationHistory.map(m => ({
+            role: m.role,
+            content: m.content
+          }))
+        });
+      }
 
       // Create AI response message
       const aiMessage = await storage.createMessage({

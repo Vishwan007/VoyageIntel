@@ -51,12 +51,33 @@ export async function analyzeMaritimeQuery(query: string): Promise<MaritimeQuery
       suggestedActions: result.suggestedActions || [],
       requiresDocuments: result.requiresDocuments || false
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to analyze maritime query:", error);
+    
+    // Provide better categorization based on keywords even without AI
+    const queryLower = query.toLowerCase();
+    let category: any = 'general';
+    let confidence = 0.7;
+    let suggestedActions: string[] = [];
+    
+    if (queryLower.includes('laytime') || queryLower.includes('loading') || queryLower.includes('discharge')) {
+      category = 'laytime';
+      suggestedActions = ['Calculate precise laytime', 'Review charter party terms'];
+    } else if (queryLower.includes('weather') || queryLower.includes('wind') || queryLower.includes('rain')) {
+      category = 'weather';
+      suggestedActions = ['Check weather conditions', 'Review operational guidelines'];
+    } else if (queryLower.includes('distance') || queryLower.includes('route') || queryLower.includes('voyage')) {
+      category = 'distance';
+      suggestedActions = ['Calculate voyage distance', 'Estimate fuel consumption'];
+    } else if (queryLower.includes('charter') || queryLower.includes('clause') || queryLower.includes('cp')) {
+      category = 'cp_clause';
+      suggestedActions = ['Interpret charter terms', 'Review legal implications'];
+    }
+    
     return {
-      category: 'general',
-      confidence: 0.5,
-      suggestedActions: [],
+      category,
+      confidence,
+      suggestedActions,
       requiresDocuments: false
     };
   }
@@ -121,9 +142,15 @@ export async function generateMaritimeResponse(
     });
 
     return response.choices[0].message.content || "I apologize, but I couldn't generate a response. Please try rephrasing your question.";
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to generate maritime response:", error);
-    return "I apologize, but I'm experiencing technical difficulties. Please try again later.";
+    
+    // Check if it's a quota error and provide helpful message
+    if (error?.code === 'insufficient_quota' || error?.status === 429) {
+      return `I'm currently unable to access the AI service due to quota limits. However, I can still help you with:\n\n• Maritime calculations (laytime, distance, weather)\n• Charter party clause analysis\n• Document uploads and basic processing\n• Access to our maritime knowledge base\n\nPlease use the maritime tools in the sidebar or ask specific calculation questions, and I'll provide expert maritime guidance using our built-in systems.`;
+    }
+    
+    return "I'm experiencing temporary connectivity issues with the AI service, but all maritime calculation tools are working perfectly. Please try using the maritime tools in the sidebar for laytime, distance, weather, and CP clause analysis.";
   }
 }
 
