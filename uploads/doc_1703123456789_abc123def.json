@@ -1,0 +1,39 @@
+{
+  "id": "doc_1703123456789_abc123def",
+  "filename": "1703123456789_GENCON_Charter_Party_MV_Seabird.pdf",
+  "originalName": "GENCON_Charter_Party_MV_Seabird.pdf",
+  "content": "GENCON CHARTER PARTY\n\nVESSEL: MV SEABIRD\nIMO: 9876543\nFLAG: Marshall Islands\nBUILT: 2018\nDWT: 75,000 MT\nGRT: 45,230\n\nOWNERS: Pacific Maritime Ltd\nAddress: 123 Ocean Drive, Singapore 049909\n\nCHARTERERS: Global Commodities Trading AG\nAddress: Bahnhofstrasse 45, 8001 Zurich, Switzerland\n\nCARGO: Iron Ore Pellets\nQUANTITY: 70,000 MT +/- 10% in Charterers' option\n\nLOADING PORT: Port Hedland, Australia\nDISCHARGING PORT: Rotterdam, Netherlands\n\nLAYDAYS: 15th - 20th December 2024\n\nLAYTIME: 72 running hours total for loading and discharging\nDEMURRAGE: USD 35,000 per day pro rata\nDESPATCH: USD 17,500 per day pro rata\n\nFREIGHT RATE: USD 42.50 per metric ton\n\nCLAUSE 1: DESCRIPTION OF VESSEL\nThe vessel is a bulk carrier of 75,000 MT deadweight, built 2018, classed 100A1 at Lloyd's Register.\n\nCLAUSE 2: CARGO\nIron ore pellets in bulk. Cargo to be loaded and trimmed at Charterers' expense.\n\nCLAUSE 3: LOADING/DISCHARGING\nLoading: One safe berth Port Hedland - vessel to tender NOR on arrival\nDischarging: One safe berth Rotterdam - vessel to tender NOR on arrival\n\nCLAUSE 4: LAYTIME\nLaytime shall commence 6 hours after NOR is tendered or on vessel's arrival at berth, whichever occurs first. Time shall count as follows:\n- Loading: 36 running hours\n- Discharging: 36 running hours\nWeather Working Days basis. Sundays and holidays excluded unless used.\n\nCLAUSE 5: DEMURRAGE/DESPATCH\nDemurrage at USD 35,000 per day or pro rata for part of a day.\nDespatch at USD 17,500 per day or pro rata for part of a day.\n\nCLAUSE 6: FREIGHT PAYMENT\nFreight payable in USD to owners' account within 5 banking days of completion of loading.\n\nDate: 1st December 2024\nOwners: Pacific Maritime Ltd\nCharterers: Global Commodities Trading AG",
+  "summary": "GENCON charter party for MV Seabird carrying 70,000 MT iron ore pellets from Port Hedland to Rotterdam. Key terms include 72 hours total laytime, USD 35,000/day demurrage, USD 42.50/MT freight rate.",
+  "documentType": "charter_party",
+  "metadata": {
+    "pages": 12,
+    "size": 245760,
+    "uploadedAt": "2024-12-01T09:30:00.000Z",
+    "processedAt": "2024-12-01T09:31:15.000Z"
+  },
+  "keywords": [
+    "charter party",
+    "gencon",
+    "iron ore",
+    "laytime",
+    "demurrage",
+    "freight",
+    "port hedland",
+    "rotterdam",
+    "bulk carrier"
+  ],
+  "sections": [
+    {
+      "title": "VESSEL PARTICULARS",
+      "content": "MV SEABIRD, IMO 9876543, Marshall Islands flag, built 2018, DWT 75,000 MT, GRT 45,230. Bulk carrier classed 100A1 at Lloyd's Register.",
+      "page": 1,
+      "type": "header"
+    },
+    {
+      "title": "CLAUSE 4: LAYTIME",
+      "content": "Laytime shall commence 6 hours after NOR is tendered or on vessel's arrival at berth, whichever occurs first. Loading: 36 running hours, Discharging: 36 running hours. Weather Working Days basis.",
+      "page": 3,
+      "type": "clause"
+    }
+  ]
+}

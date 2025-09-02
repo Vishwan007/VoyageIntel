@@ -1,0 +1,37 @@
+{
+  "id": "doc_1703209876543_def456ghi",
+  "filename": "1703209876543_Bill_of_Lading_Hamburg_Shanghai.pdf",
+  "originalName": "Bill_of_Lading_Hamburg_Shanghai.pdf",
+  "content": "BILL OF LADING\n\nB/L NO: HAPAG-2024-001234\nVESSEL: MV OCEAN PIONEER  \nVOYAGE: 024W\nPORT OF LOADING: Hamburg, Germany\nPORT OF DISCHARGE: Shanghai, China\n\nSHIPPER: European Steel Manufacturing GmbH\nAddress: Industriestrasse 15, 20095 Hamburg, Germany\n\nCONSIGNEE: Shanghai Metal Works Ltd\nAddress: 888 Pudong Avenue, Shanghai 200120, China\n\nNOTIFY PARTY: Same as consignee\n\nDESCRIPTION OF GOODS:\nSteel Coils, Hot Rolled\n20 containers x 40' HC\nContainer numbers: GESU1234567-0 to GESU1234586-9\nWeight: 24.5 MT per container\nTotal Weight: 490.00 MT\n\nMARKS AND NUMBERS: SMW/SH/2024/001-020\n\nFREIGHT TERMS: Prepaid\nFREIGHT AMOUNT: USD 24,500.00\n\nPLACE OF RECEIPT: Hamburg Container Terminal\nPLACE OF DELIVERY: Shanghai Yangshan Port\n\nSHIPPED ON BOARD: 5th December 2024\n\nTerms and Conditions:\n1. This Bill of Lading is subject to the Hague-Visby Rules\n2. Delivery will only be made against surrender of the original Bill of Lading\n3. Container seals applied by shipper, carrier not responsible for contents\n4. Goods carried on deck at shipper's risk\n\nSIGNED: Hamburg, 5th December 2024\nHAPAG-LLOYD AG\nMaster: Capt. Klaus Mueller",
+  "summary": "Bill of Lading for 20x40' containers of steel coils from Hamburg to Shanghai aboard MV Ocean Pioneer. Total cargo 490 MT, freight prepaid USD 24,500.",
+  "documentType": "bill_of_lading",
+  "metadata": {
+    "pages": 3,
+    "size": 156890,
+    "uploadedAt": "2024-12-05T14:20:00.000Z",
+    "processedAt": "2024-12-05T14:21:30.000Z"
+  },
+  "keywords": [
+    "bill of lading",
+    "containers",
+    "steel coils",
+    "hamburg",
+    "shanghai",
+    "hapag lloyd",
+    "hague visby"
+  ],
+  "sections": [
+    {
+      "title": "CARGO DESCRIPTION",
+      "content": "Steel Coils, Hot Rolled in 20x40' HC containers, total weight 490.00 MT, container numbers GESU1234567-0 to GESU1234586-9",
+      "page": 1,
+      "type": "header"
+    },
+    {
+      "title": "TERMS AND CONDITIONS",
+      "content": "Subject to Hague-Visby Rules, delivery against original B/L, container seals by shipper, deck cargo at shipper's risk",
+      "page": 2,
+      "type": "clause"
+    }
+  ]
+}

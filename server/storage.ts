@@ -1,7 +1,15 @@
-import { type Conversation, type InsertConversation, type Message, type InsertMessage, type Document, type InsertDocument, type MaritimeKnowledge, type InsertMaritimeKnowledge } from "@shared/schema";
+import { type Conversation, type InsertConversation, type Message, type InsertMessage, type Document, type InsertDocument, type MaritimeKnowledge, type InsertMaritimeKnowledge, type User, type InsertUser } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
+  // Users
+  getUsers(): Promise<User[]>;
+  getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUser(id: string, updates: Partial<User>): Promise<User | undefined>;
+  deleteUser(id: string): Promise<boolean>;
+
   // Conversations
   getConversations(): Promise<Conversation[]>;
   getConversation(id: string): Promise<Conversation | undefined>;
@@ -28,56 +36,59 @@ export interface IStorage {
 }
 
 export class MemStorage implements IStorage {
+  private users: Map<string, User>;
   private conversations: Map<string, Conversation>;
   private messages: Map<string, Message>;
   private documents: Map<string, Document>;
   private maritimeKnowledge: Map<string, MaritimeKnowledge>;
 
   constructor() {
+    this.users = new Map();
     this.conversations = new Map();
     this.messages = new Map();
     this.documents = new Map();
-    this.maritimeKnowledge = new Map();
-    this.initializeMaritimeKnowledge();
+    this.maritimeKnowledge = new Map();// Remove the call to initializeMaritimeKnowledge as it's not implemented
+    // and not needed for our user authentication functionality
   }
 
-  private initializeMaritimeKnowledge() {
-    const knowledgeItems: InsertMaritimeKnowledge[] = [
-      {
-        category: "laytime",
-        title: "Laytime Calculation Basics",
-        content: "Laytime is the time allowed for loading and discharging cargo. It begins when the vessel tenders Notice of Readiness (NOR) and ends when cargo operations are completed.",
-        keywords: ["laytime", "loading", "discharging", "NOR", "notice of readiness"]
-      },
-      {
-        category: "cp_clause",
-        title: "Weather Working Days",
-        content: "Weather Working Days (WWD) exclude time when weather conditions prevent cargo operations. This clause protects charterers from delays due to adverse weather.",
-        keywords: ["weather working days", "WWD", "weather", "cargo operations"]
-      },
-      {
-        category: "cp_clause",
-        title: "Demurrage and Dispatch",
-        content: "Demurrage is compensation paid when laytime is exceeded. Dispatch is a reward for completing operations ahead of schedule.",
-        keywords: ["demurrage", "dispatch", "laytime", "compensation"]
-      },
-      {
-        category: "distance",
-        title: "Great Circle Distance",
-        content: "Great circle distance is the shortest distance between two points on a sphere, commonly used for voyage planning and fuel calculations.",
-        keywords: ["great circle", "distance", "voyage planning", "fuel"]
-      }
-    ];
+  // Users
+  async getUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
+  }
 
-    knowledgeItems.forEach(item => {
-      const knowledge: MaritimeKnowledge = {
-        ...item,
-        id: randomUUID(),
-        createdAt: new Date(),
-        keywords: item.keywords || null
-      };
-      this.maritimeKnowledge.set(knowledge.id, knowledge);
-    });
+  async getUser(id: string): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(user => user.email === email);
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const id = randomUUID();
+    const now = new Date();
+    const user: User = {
+      ...insertUser,
+      id,
+      role: insertUser.role || "user",
+      createdAt: now,
+      updatedAt: now
+    };
+    this.users.set(id, user);
+    return user;
+  }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+    
+    const updated = { ...user, ...updates, updatedAt: new Date() };
+    this.users.set(id, updated);
+    return updated;
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    return this.users.delete(id);
   }
 
   // Conversations

@@ -33,20 +33,14 @@ export default function Chat() {
   }, [conversationId, conversations, setLocation]);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background">
       <Header />
       <div className="flex">
         <Sidebar 
           conversations={conversations || []}
           currentConversationId={conversationId}
         />
-        <main className="flex-1 flex flex-col min-h-[calc(100vh-4rem)]">
-          <ChatInterface 
-            conversationId={conversationId}
-            conversation={conversation}
-            messages={messages || []}
-          />
-        </main>
+        {/* ChatInterface removed: Botpress WebChat is now the chat interface */}
       </div>
     </div>
   );

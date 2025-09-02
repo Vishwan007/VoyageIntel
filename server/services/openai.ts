@@ -1,9 +1,11 @@
 import OpenAI from "openai";
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-const openai = new OpenAI({ 
-  apiKey: process.env.OPENAI_API_KEY
-});
+const openai = process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your_openai_api_key_here' 
+  ? new OpenAI({ 
+      apiKey: process.env.OPENAI_API_KEY
+    })
+  : null;
 
 export interface MaritimeQueryAnalysis {
   category: 'laytime' | 'weather' | 'distance' | 'cp_clause' | 'document_analysis' | 'voyage_guidance' | 'general';
@@ -14,6 +16,10 @@ export interface MaritimeQueryAnalysis {
 
 export async function analyzeMaritimeQuery(query: string): Promise<MaritimeQueryAnalysis> {
   try {
+    if (!openai) {
+      throw new Error("OpenAI API key not configured");
+    }
+    
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
@@ -92,6 +98,10 @@ export async function generateMaritimeResponse(
   }
 ): Promise<string> {
   try {
+    if (!openai) {
+      throw new Error("OpenAI API key not configured");
+    }
+    
     const systemPrompt = `You are MaritimeAI, an expert maritime assistant specializing in:
     - Laytime calculations and charterparty terms
     - Weather analysis and routing

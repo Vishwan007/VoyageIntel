@@ -1,0 +1,38 @@
+{
+  "id": "doc_1703476543210_mno345pqr",
+  "filename": "1703476543210_Port_Instructions_Dubai.pdf",
+  "originalName": "Port_Instructions_Dubai.pdf",
+  "content": "PORT OF DUBAI - JEBEL ALI\nVOYAGE INSTRUCTIONS\n\nVESSEL: MV DESERT WIND\nETA: 5th January 2025\nCARGO: Containerized Mixed Cargo\n\nPORT AUTHORITY: Dubai Ports World\nPort Control VHF: Channel 12\nPilot Station VHF: Channel 14\n\nARRIVAL PROCEDURES:\n1. Send ETA message 72, 48, and 24 hours before arrival\n2. Contact Port Control on VHF Ch 12 when 12 miles from port\n3. Pilot boarding at Pilot Station Alpha (25°06'N, 055°02'E)\n4. Immigration and customs clearance at berth\n\nBERTH ALLOCATION: Terminal 2, Berth 7-8\nBERTH LENGTH: 400 meters\nDEPTH: 16 meters\nMAXIMUM LOA: 380 meters\nMAXIMUM DRAFT: 15.5 meters\n\nCARGO OPERATIONS:\nContainer Operations: 24 hours except Fridays 11:30-13:00\nCrane Capacity: 4 x STS cranes @ 65 tons SWL\nAverage Productivity: 35 containers/hour per crane\n\nSERVICES AVAILABLE:\n- Fresh water: USD 8.50 per ton\n- Marine gas oil: Available on request\n- Waste disposal: USD 2,500 flat rate\n- Ship supplies: 24-hour service\n- Crew change: Permitted with advance notice\n\nDOCUMENTATION REQUIRED:\n1. Crew list (6 copies)\n2. Passenger manifest (if applicable)  \n3. Ship's stores declaration\n4. Maritime Declaration of Health\n5. Customs cargo manifest\n6. Dangerous goods declaration (if applicable)\n7. Ballast water management certificate\n\nCONTACT INFORMATION:\nPort Authority: +971 4 881 5555\nAgent: Gulf Maritime Services\nAgent Contact: Mr. Ahmed Hassan +971 50 123 4567\nEmergency: Dubai Coast Guard +971 4 345 6789\n\nWEATHER CONDITIONS:\nPrevailing winds: NW 10-15 knots\nVisibility: Generally good (>10 NM)\nCurrent: 0.5-1.0 knot setting NE\n\nRESTRICTIONS:\n- No hot work without permit\n- No discharge of any waste overboard\n- Speed limit in port: 6 knots maximum\n- All crew must remain on board unless shore leave granted\n\nLOCAL REGULATIONS:\n- UAE Immigration requirements apply\n- Zero tolerance for drugs and alcohol\n- Crew articles containing pork prohibited\n- Photography of port facilities restricted\n\nDEPARTURE:\n- Give 2 hours notice for pilot\n- Port dues payable before departure\n- Customs clearance required\n- Agent to arrange final documentation\n\nValid from: 1st January 2025\nIssued by: Dubai Ports Authority",
+  "summary": "Port instructions for MV Desert Wind arriving Dubai Jebel Ali Terminal 2. Covers arrival procedures, berth details, cargo operations, required documentation, and local regulations.",
+  "documentType": "voyage_instructions",
+  "metadata": {
+    "pages": 5,
+    "size": 267890,
+    "uploadedAt": "2025-01-02T08:30:00.000Z",
+    "processedAt": "2025-01-02T08:31:45.000Z"
+  },
+  "keywords": [
+    "port instructions",
+    "dubai",
+    "jebel ali",
+    "pilot",
+    "berth",
+    "containers",
+    "customs",
+    "immigration"
+  ],
+  "sections": [
+    {
+      "title": "ARRIVAL PROCEDURES",
+      "content": "ETA messages at 72/48/24 hours, contact Port Control Ch 12 at 12 miles, pilot boarding at Alpha station, clearance at berth",
+      "page": 1,
+      "type": "header"
+    },
+    {
+      "title": "LOCAL REGULATIONS",
+      "content": "UAE Immigration requirements, zero tolerance drugs/alcohol, no pork articles, restricted photography, crew remain aboard",
+      "page": 4,
+      "type": "clause"
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import {
   insertMessageSchema, 
   insertDocumentSchema 
 } from "@shared/schema";
+import authRoutes from "./routes/auth";
 import { 
   analyzeMaritimeQuery, 
   generateMaritimeResponse, 
@@ -22,6 +23,8 @@ import {
   interpretCPClause,
   searchMaritimeKnowledge 
 } from "./services/maritime-knowledge";
+import geminiAI from "./services/gemini-ai";
+import { pdfProcessor, ProcessedDocument, KnowledgeBaseEntry } from "./services/pdf-processor";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -45,6 +48,172 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth routes
+  app.use("/api/auth", authRoutes);
+  
+  // Maritime API routes - must be before catch-all routes
+  app.post("/api/maritime/weather", async (req, res) => {
+    try {
+      const { location } = req.body;
+      if (!location) {
+        return res.status(400).json({ error: "Location required" });
+      }
+
+      const weather = getWeatherConditions(location);
+      res.json(weather);
+    } catch (error) {
+      console.error("Weather API error:", error);
+      res.status(500).json({ error: "Failed to get weather conditions" });
+    }
+  });
+
+  app.post("/api/maritime/laytime", async (req, res) => {
+    try {
+      const { arrivalTime, completionTime, excludeWeekends } = req.body;
+      
+      if (!arrivalTime || !completionTime) {
+        return res.status(400).json({ message: "Arrival and completion times required" });
+      }
+
+      const result = calculateLaytime(
+        new Date(arrivalTime),
+        new Date(completionTime),
+        { excludeWeekends }
+      );
+
+      res.json(result);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid date format" });
+    }
+  });
+
+  app.post("/api/maritime/distance", async (req, res) => {
+    try {
+      const { fromPort, toPort } = req.body;
+      
+      if (!fromPort || !toPort) {
+        return res.status(400).json({ message: "From and to ports required" });
+      }
+
+      const result = calculateDistance(fromPort, toPort);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to calculate distance" });
+    }
+  });
+
+  app.post("/api/maritime/analyze-clause", async (req, res) => {
+    try {
+      const { clauseText } = req.body;
+      
+      if (!clauseText) {
+        return res.status(400).json({ message: "Clause text required" });
+      }
+
+      const result = interpretCPClause(clauseText);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to interpret clause" });
+    }
+  });
+
+  app.post("/api/maritime/route", async (req, res) => {
+    try {
+      const { sourcePort, destinationPort } = req.body;
+      
+      if (!sourcePort || !destinationPort) {
+        return res.status(400).json({ error: "Source and destination ports are required" });
+      }
+
+      // Calculate great circle distance
+      const lat1 = sourcePort.lat * Math.PI / 180;
+      const lat2 = destinationPort.lat * Math.PI / 180;
+      const deltaLat = (destinationPort.lat - sourcePort.lat) * Math.PI / 180;
+      const deltaLng = (destinationPort.lng - sourcePort.lng) * Math.PI / 180;
+
+      const a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) +
+                Math.cos(lat1) * Math.cos(lat2) *
+                Math.sin(deltaLng/2) * Math.sin(deltaLng/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      const distance = 3440.065 * c; // Earth radius in nautical miles
+
+      const estimatedDays = Math.round(distance / 336 * 100) / 100; // 14 knots average = 336 NM/day
+      const fuelConsumption = Math.round(distance * 0.05 * 100) / 100; // Rough estimate
+
+      // Add bunker stops for long routes
+      const bunkerStops = [];
+      if (distance > 6000) {
+        // Add strategic bunker locations based on route
+        if (sourcePort.lng < 0 && destinationPort.lng > 50) {
+          // Atlantic to Asia route
+          bunkerStops.push({ name: "Gibraltar", lat: 36.1408, lng: -5.3536 });
+          bunkerStops.push({ name: "Suez Canal", lat: 30.0444, lng: 32.2357 });
+        } else if (sourcePort.lng > 50 && destinationPort.lng < 0) {
+          // Asia to Atlantic route
+          bunkerStops.push({ name: "Suez Canal", lat: 30.0444, lng: 32.2357 });
+          bunkerStops.push({ name: "Gibraltar", lat: 36.1408, lng: -5.3536 });
+        }
+      }
+
+      const waypoints = [
+        { lat: sourcePort.lat, lng: sourcePort.lng },
+        ...bunkerStops,
+        { lat: destinationPort.lat, lng: destinationPort.lng }
+      ];
+
+      res.json({
+        distance: Math.round(distance),
+        estimatedDays,
+        fuelConsumption,
+        bunkerStops,
+        waypoints
+      });
+    } catch (error) {
+      console.error("Route calculation error:", error);
+      res.status(500).json({ error: "Failed to calculate route" });
+    }
+  });
+
+  // AI Assistant endpoint for maritime queries
+  app.post("/api/maritime/ai-chat", async (req, res) => {
+    try {
+      const { message, context } = req.body;
+      
+      console.log('AI chat endpoint called with message:', message);
+      console.log('Context:', context);
+      
+      if (!message) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      // Use Gemini AI if available, otherwise fallback
+      const response = await geminiAI.generateMaritimeResponse(message, context);
+      
+      console.log('AI response generated:', response.substring(0, 200) + '...');
+      res.json({ response });
+    } catch (error) {
+      console.error("AI chat error:", error);
+      res.status(500).json({ error: "Failed to generate AI response" });
+    }
+  });
+
+  // Initialize Gemini AI if API key is provided
+  app.post("/api/maritime/configure-ai", async (req, res) => {
+    try {
+      const { apiKey } = req.body;
+      
+      if (!apiKey) {
+        return res.status(400).json({ error: "API key is required" });
+      }
+
+      geminiAI.initialize({ apiKey });
+      
+      res.json({ message: "AI service configured successfully" });
+    } catch (error) {
+      console.error("AI configuration error:", error);
+      res.status(500).json({ error: "Failed to configure AI service" });
+    }
+  });
   // Conversations
   app.get("/api/conversations", async (req, res) => {
     try {
@@ -62,6 +231,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(conversation);
     } catch (error) {
       res.status(400).json({ message: "Invalid conversation data" });
+    }
+  });
+
+  app.get("/api/conversations/new", async (req, res) => {
+    try {
+      // Return a placeholder for new conversation
+      res.status(404).json({ message: "Conversation not found" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch conversation" });
     }
   });
 
@@ -241,24 +419,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "No file uploaded" });
       }
 
-      // Read file content
-      const content = fs.readFileSync(req.file.path, 'utf-8');
-      
-      // Create document record
-      const documentData = {
-        filename: req.file.filename,
-        originalName: req.file.originalname,
-        mimeType: req.file.mimetype,
-        size: req.file.size.toString(),
-        content
-      };
+      // For PDF files, use enhanced processing
+      if (req.file.mimetype === 'application/pdf') {
+        const fileBuffer = fs.readFileSync(req.file.path);
+        const processedDoc = await pdfProcessor.processPDFBuffer(fileBuffer, req.file.originalname);
+        
+        // Create knowledge base entries
+        const knowledgeEntries = await pdfProcessor.createKnowledgeBaseEntries(processedDoc);
+        
+        // Store in knowledge base (you might want to add this to your storage)
+        // await storage.addKnowledgeBaseEntries(knowledgeEntries);
+        
+        // Clean up uploaded file
+        fs.unlinkSync(req.file.path);
+        
+        res.json({
+          ...processedDoc,
+          knowledgeEntries: knowledgeEntries.length,
+          message: `PDF processed successfully. Extracted ${knowledgeEntries.length} knowledge base entries.`
+        });
+      } else {
+        // For other file types, use original processing
+        const content = fs.readFileSync(req.file.path, 'utf-8');
+        
+        const documentData = {
+          filename: req.file.filename,
+          originalName: req.file.originalname,
+          mimeType: req.file.mimetype,
+          size: req.file.size.toString(),
+          content
+        };
 
-      const document = await storage.createDocument(documentData);
+        const document = await storage.createDocument(documentData);
+        processDocumentAsync(document.id, content);
 
-      // Process document asynchronously
-      processDocumentAsync(document.id, content);
-
-      res.json(document);
+        res.json(document);
+      }
     } catch (error) {
       console.error("Failed to upload document:", error);
       res.status(500).json({ message: "Failed to upload document" });
@@ -311,70 +507,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Maritime tools
-  app.post("/api/maritime/laytime", async (req, res) => {
-    try {
-      const { arrivalTime, completionTime, excludeWeekends } = req.body;
-      
-      if (!arrivalTime || !completionTime) {
-        return res.status(400).json({ message: "Arrival and completion times required" });
-      }
-
-      const result = calculateLaytime(
-        new Date(arrivalTime),
-        new Date(completionTime),
-        { excludeWeekends }
-      );
-
-      res.json(result);
-    } catch (error) {
-      res.status(400).json({ message: "Invalid date format" });
-    }
-  });
-
-  app.post("/api/maritime/distance", async (req, res) => {
-    try {
-      const { fromPort, toPort } = req.body;
-      
-      if (!fromPort || !toPort) {
-        return res.status(400).json({ message: "From and to ports required" });
-      }
-
-      const result = calculateDistance(fromPort, toPort);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to calculate distance" });
-    }
-  });
-
-  app.get("/api/maritime/weather", async (req, res) => {
-    try {
-      const location = req.query.location as string;
-      if (!location) {
-        return res.status(400).json({ message: "Location required" });
-      }
-
-      const weather = getWeatherConditions(location);
-      res.json(weather);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to get weather conditions" });
-    }
-  });
-
-  app.post("/api/maritime/cp-clause", async (req, res) => {
-    try {
-      const { clauseText } = req.body;
-      
-      if (!clauseText) {
-        return res.status(400).json({ message: "Clause text required" });
-      }
-
-      const result = interpretCPClause(clauseText);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to interpret clause" });
-    }
-  });
+  // Maritime tools - removed duplicate routes
 
   // Maritime knowledge base
   app.get("/api/maritime/knowledge", async (req, res) => {
@@ -396,6 +529,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const knowledge = await storage.searchMaritimeKnowledge(query);
       res.json(knowledge);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to search knowledge base" });
+    }
+  });
+
+  // PDF Knowledge Base endpoints
+  app.get("/api/pdf-documents", async (req, res) => {
+    try {
+      const documents = await pdfProcessor.listProcessedDocuments();
+      res.json(documents);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch PDF documents" });
+    }
+  });
+
+  app.get("/api/pdf-documents/:id", async (req, res) => {
+    try {
+      const document = await pdfProcessor.getProcessedDocument(req.params.id);
+      if (!document) {
+        return res.status(404).json({ message: "PDF document not found" });
+      }
+      res.json(document);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch PDF document" });
+    }
+  });
+
+  app.delete("/api/pdf-documents/:id", async (req, res) => {
+    try {
+      const deleted = await pdfProcessor.deleteDocument(req.params.id);
+      if (!deleted) {
+        return res.status(404).json({ message: "PDF document not found" });
+      }
+      res.json({ message: "PDF document deleted" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete PDF document" });
+    }
+  });
+
+  app.get("/api/pdf-documents/search", async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      if (!query) {
+        return res.status(400).json({ message: "Search query required" });
+      }
+      
+      const documents = await pdfProcessor.searchDocuments(query);
+      res.json(documents);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to search PDF documents" });
+    }
+  });
+
+  app.get("/api/knowledge-base", async (req, res) => {
+    try {
+      const documents = await pdfProcessor.listProcessedDocuments();
+      const allEntries: KnowledgeBaseEntry[] = [];
+      
+      for (const doc of documents) {
+        const entries = await pdfProcessor.createKnowledgeBaseEntries(doc);
+        allEntries.push(...entries);
+      }
+      
+      // Sort by relevance score
+      allEntries.sort((a, b) => b.relevanceScore - a.relevanceScore);
+      
+      res.json(allEntries);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch knowledge base" });
+    }
+  });
+
+  app.get("/api/knowledge-base/search", async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      const category = req.query.category as string;
+      
+      if (!query) {
+        return res.status(400).json({ message: "Search query required" });
+      }
+      
+      const documents = await pdfProcessor.searchDocuments(query);
+      const allEntries: KnowledgeBaseEntry[] = [];
+      
+      for (const doc of documents) {
+        const entries = await pdfProcessor.createKnowledgeBaseEntries(doc);
+        allEntries.push(...entries.filter(entry => 
+          !category || entry.category === category
+        ));
+      }
+      
+      // Sort by relevance score
+      allEntries.sort((a, b) => b.relevanceScore - a.relevanceScore);
+      
+      res.json(allEntries.slice(0, 20)); // Return top 20 results
     } catch (error) {
       res.status(500).json({ message: "Failed to search knowledge base" });
     }

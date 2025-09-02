@@ -1,0 +1,14 @@
+{
+  "ports": [
+    { "id": "port-a", "name": "Port A", "coordinates": [34.0522, -118.2437] },
+    { "id": "port-b", "name": "Port B", "coordinates": [40.7128, -74.0060] },
+    { "id": "port-c", "name": "Port C", "coordinates": [51.5074, 0.1278] }
+  ],
+  "bunkers": [
+    { "id": "bunker-1", "name": "Bunker 1", "coordinates": [30.0, -90.0] },
+    { "id": "bunker-2", "name": "Bunker 2", "coordinates": [35.0, -80.0] }
+  ],
+  "ships": [
+    { "id": "ship-1", "name": "Voyage Ship 1", "averageSpeedKnots": 15 }
+  ]
+}

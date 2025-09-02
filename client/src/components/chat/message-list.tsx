@@ -39,33 +39,33 @@ function WelcomeMessage() {
       <div className="w-8 h-8 bg-maritime-blue rounded-full flex items-center justify-center flex-shrink-0">
         <Zap className="w-4 h-4 text-white" />
       </div>
-      <div className="bg-white rounded-lg border border-gray-200 p-4 max-w-2xl">
-        <div className="text-sm font-medium text-gray-900 mb-2">Welcome to MaritimeAI!</div>
-        <div className="text-sm text-gray-700 mb-3">
+      <div className="bg-card rounded-lg border border-border p-4 max-w-2xl">
+        <div className="text-sm font-medium text-foreground mb-2">Welcome to MaritimeAI!</div>
+        <div className="text-sm text-muted-foreground mb-3">
           I'm your maritime assistant, ready to help with:
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-          <div className="flex items-center space-x-2 text-gray-600">
+          <div className="flex items-center space-x-2 text-muted-foreground">
             <div className="w-1.5 h-1.5 bg-ocean-teal rounded-full"></div>
             <span>Laytime calculations</span>
           </div>
-          <div className="flex items-center space-x-2 text-gray-600">
+          <div className="flex items-center space-x-2 text-muted-foreground">
             <div className="w-1.5 h-1.5 bg-ocean-teal rounded-full"></div>
             <span>Weather information</span>
           </div>
-          <div className="flex items-center space-x-2 text-gray-600">
+          <div className="flex items-center space-x-2 text-muted-foreground">
             <div className="w-1.5 h-1.5 bg-ocean-teal rounded-full"></div>
             <span>Distance calculations</span>
           </div>
-          <div className="flex items-center space-x-2 text-gray-600">
+          <div className="flex items-center space-x-2 text-muted-foreground">
             <div className="w-1.5 h-1.5 bg-ocean-teal rounded-full"></div>
             <span>CP clause interpretation</span>
           </div>
-          <div className="flex items-center space-x-2 text-gray-600">
+          <div className="flex items-center space-x-2 text-muted-foreground">
             <div className="w-1.5 h-1.5 bg-ocean-teal rounded-full"></div>
             <span>Document analysis</span>
           </div>
-          <div className="flex items-center space-x-2 text-gray-600">
+          <div className="flex items-center space-x-2 text-muted-foreground">
             <div className="w-1.5 h-1.5 bg-ocean-teal rounded-full"></div>
             <span>Voyage guidance</span>
           </div>
@@ -90,23 +90,23 @@ function MessageBubble({ message }: { message: Message }) {
       <div className={`rounded-lg p-4 max-w-2xl ${
         isUser 
           ? 'bg-maritime-blue text-white' 
-          : 'bg-white border border-gray-200'
+          : 'bg-card border border-border'
       }`}>
-        <div className={`text-sm whitespace-pre-wrap ${isUser ? 'text-white' : 'text-gray-900'}`}>
+        <div className={`text-sm whitespace-pre-wrap ${isUser ? 'text-white' : 'text-foreground'}`}>
           {message.content}
         </div>
         
         {metadata?.analysis && (
-          <div className="mt-3 pt-3 border-t border-gray-200">
+          <div className="mt-3 pt-3 border-t border-border">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-medium text-gray-700 uppercase tracking-wide">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
                 Query Analysis
               </span>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-muted-foreground">
                 {Math.round(metadata.analysis.confidence * 100)}% confidence
               </span>
             </div>
-            <div className="text-xs text-gray-600 mb-2">
+            <div className="text-xs text-muted-foreground mb-2">
               Category: <span className="font-medium">{metadata.analysis.category}</span>
             </div>
             {metadata.analysis.suggestedActions?.length > 0 && (
@@ -129,8 +129,8 @@ function MessageBubble({ message }: { message: Message }) {
       </div>
       
       {isUser && (
-        <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center flex-shrink-0">
-          <User className="w-4 h-4 text-gray-600" />
+        <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0">
+          <User className="w-4 h-4 text-muted-foreground" />
         </div>
       )}
     </div>

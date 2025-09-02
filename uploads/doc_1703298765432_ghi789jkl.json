@@ -1,0 +1,38 @@
+{
+  "id": "doc_1703298765432_ghi789jkl",
+  "filename": "1703298765432_Weather_Routing_Report_North_Atlantic.pdf",
+  "originalName": "Weather_Routing_Report_North_Atlantic.pdf",
+  "content": "WEATHER ROUTING REPORT\n\nVESSEL: MV ATLANTIC VOYAGER\nVOYAGE: North Atlantic Crossing\nDATE: 10th December 2024\nPREPARED BY: Maritime Weather Services Ltd\n\nROUTE OPTIMIZATION ANALYSIS\n\nDEPARTURE: Southampton, UK (50°54'N, 001°24'W)\nDESTINATION: New York, USA (40°42'N, 074°00'W)\nDEPARTURE TIME: 12th December 2024, 06:00 UTC\nETA: 20th December 2024, 18:00 UTC\nDISTANCE: 3,150 nautical miles\n\nWEATHER SYNOPSIS:\nA strong low pressure system is developing over the North Atlantic, moving eastward at 25 knots. Wind speeds up to 45 knots expected in the central North Atlantic from Dec 14-16.\n\nRECOMMENDED ROUTE:\nGreat Circle Route modified to avoid severe weather:\n- Proceed south of normal great circle by 50 nautical miles\n- Transit between 48°N and 50°N longitude 030°W to 040°W\n- Resume great circle routing after longitude 040°W\n\nWEATHER FORECAST BY ZONES:\n\nZONE A (50°N-52°N, 000°W-020°W):\nDec 12-13: SW winds 15-20 knots, seas 2-3 meters\nDec 14-15: W winds 25-30 knots, seas 4-5 meters\nDec 16: NW winds 20-25 knots, seas 3-4 meters\n\nZONE B (48°N-50°N, 020°W-040°W):\nDec 12-13: SW winds 20-25 knots, seas 3-4 meters\nDec 14-15: W winds 35-40 knots, seas 6-7 meters (SEVERE)\nDec 16: NW winds 25-30 knots, seas 4-5 meters\n\nZONE C (46°N-48°N, 040°W-060°W):\nDec 14-16: W winds 20-30 knots, seas 3-5 meters\nDec 17-18: Variable winds 10-15 knots, seas 2-3 meters\n\nFUEL CONSUMPTION ESTIMATE:\nGreat Circle: 385 MT\nRecommended Route: 395 MT (+10 MT for weather avoidance)\n\nSAFETY RECOMMENDATIONS:\n- Monitor weather updates every 6 hours\n- Reduce speed if encountering seas >6 meters\n- Secure all cargo and deck equipment before entering Zone B\n- Consider further south routing if storm intensifies\n\nCaptain's approval required for route implementation.\n\nWeather Service: Maritime Weather Services Ltd\nContact: ops@maritimeweather.com\nEmergency: +44 20 7946 0958",
+  "summary": "Weather routing report for MV Atlantic Voyager crossing North Atlantic. Recommends modified route 50NM south of great circle to avoid severe weather system with 45-knot winds Dec 14-16.",
+  "documentType": "weather_report",
+  "metadata": {
+    "pages": 6,
+    "size": 312456,
+    "uploadedAt": "2024-12-10T11:15:00.000Z",
+    "processedAt": "2024-12-10T11:16:45.000Z"
+  },
+  "keywords": [
+    "weather routing",
+    "north atlantic",
+    "storm",
+    "wind",
+    "routing",
+    "navigation",
+    "fuel consumption",
+    "safety"
+  ],
+  "sections": [
+    {
+      "title": "ROUTE OPTIMIZATION ANALYSIS",
+      "content": "Southampton to New York, 3,150 NM, modified great circle to avoid severe weather, ETA Dec 20th",
+      "page": 1,
+      "type": "header"
+    },
+    {
+      "title": "SAFETY RECOMMENDATIONS",
+      "content": "Monitor weather every 6 hours, reduce speed in seas >6m, secure cargo before Zone B, consider further south routing",
+      "page": 5,
+      "type": "clause"
+    }
+  ]
+}

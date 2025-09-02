@@ -1,0 +1,38 @@
+{
+  "id": "doc_1703387654321_jkl012mno",
+  "filename": "1703387654321_Laytime_Statement_MV_Nordic_Star.pdf",
+  "originalName": "Laytime_Statement_MV_Nordic_Star.pdf",
+  "content": "LAYTIME STATEMENT\n\nVESSEL: MV NORDIC STAR\nVOYAGE: 2024/12\nCHARTER PARTY: NORGRAIN dated 15th November 2024\n\nLOADING PORT: Oslo, Norway\nDISCHARGING PORT: Alexandria, Egypt\n\nCARGO: Wheat in bulk - 45,000 MT\n\nLAYTIME CALCULATIONS:\n\nLOADING - Oslo:\nNOR Tendered: 18th December 2024 at 08:30\nAccepted: 18th December 2024 at 09:15\nLaytime Commenced: 18th December 2024 at 15:15 (6 hours after NOR acceptance)\nLoading Started: 18th December 2024 at 16:00\nLoading Completed: 20th December 2024 at 14:30\n\nTime Used for Loading:\nFrom 15:15 on 18th Dec to 14:30 on 20th Dec\nTotal: 47 hours 15 minutes\nAllowed Laytime: 48 hours\nTime Saved: 45 minutes\n\nDISCHARGING - Alexandria:\nNOR Tendered: 26th December 2024 at 06:00\nAccepted: 26th December 2024 at 07:30\nLaytime Commenced: 26th December 2024 at 13:30 (6 hours after NOR acceptance)\nDischarging Started: 26th December 2024 at 14:00\nDischarging Completed: 29th December 2024 at 11:45\n\nTime Used for Discharging:\nFrom 13:30 on 26th Dec to 11:45 on 29th Dec\nTotal: 70 hours 15 minutes\nAllowed Laytime: 60 hours\nExcess Time: 10 hours 15 minutes\n\nLAYTIME SUMMARY:\nLoading Time Saved: 45 minutes\nDischarging Overtime: 10 hours 15 minutes\nNet Demurrage Time: 9 hours 30 minutes\n\nDEMURRAGE CALCULATION:\nRate: USD 28,000 per day\nDemurrage Due: 9.5 hours = USD 11,083.33\n\nEXCEPTIONS TO LAYTIME:\n- Weather delay on 27th Dec from 18:00 to 06:00 (12 hours) - excluded from laytime\n- Customs inspection delay on 28th Dec from 10:00 to 12:00 (2 hours) - excluded from laytime\n\nFINAL DEMURRAGE: USD 11,083.33\nPayment due within 30 days as per Charter Party terms.\n\nPrepared by: Nordic Shipping Lines\nDate: 30th December 2024\nMaster: Captain Erik Andersen",
+  "summary": "Laytime statement for MV Nordic Star carrying wheat from Oslo to Alexandria. Net demurrage of 9.5 hours resulted in USD 11,083.33 due to discharging delays.",
+  "documentType": "laytime_calculation",
+  "metadata": {
+    "pages": 4,
+    "size": 198745,
+    "uploadedAt": "2024-12-30T16:45:00.000Z",
+    "processedAt": "2024-12-30T16:46:20.000Z"
+  },
+  "keywords": [
+    "laytime",
+    "demurrage",
+    "wheat",
+    "oslo",
+    "alexandria",
+    "nor",
+    "charter party",
+    "bulk cargo"
+  ],
+  "sections": [
+    {
+      "title": "LOADING CALCULATIONS",
+      "content": "Oslo loading: NOR 18th Dec 08:30, commenced 15:15, completed 20th Dec 14:30, used 47h 15m of 48h allowed, saved 45 minutes",
+      "page": 2,
+      "type": "header"
+    },
+    {
+      "title": "DEMURRAGE CALCULATION",
+      "content": "Net demurrage 9.5 hours at USD 28,000/day = USD 11,083.33, payment due within 30 days per charter party",
+      "page": 3,
+      "type": "clause"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Send, Paperclip, Mic } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Send, Paperclip, Mic, MicOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -13,16 +13,65 @@ interface ChatInputProps {
 
 export default function ChatInput({ conversationId, onUploadClick }: ChatInputProps) {
   const [message, setMessage] = useState("");
+  const [isListening, setIsListening] = useState(false);
+  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  // Initialize speech recognition
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognitionInstance = new SpeechRecognition();
+      
+      recognitionInstance.continuous = true;
+      recognitionInstance.interimResults = true;
+      recognitionInstance.lang = 'en-US';
+      
+      recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
+        const transcript = Array.from(event.results)
+          .map(result => result[0])
+          .map(result => result.transcript)
+          .join('');
+        
+        setMessage(transcript);
+      };
+      
+      recognitionInstance.onerror = (event: SpeechRecognitionErrorEvent) => {
+        console.error('Speech recognition error', event.error);
+        setIsListening(false);
+        toast({
+          title: "Voice Recognition Error",
+          description: `Error: ${event.error}. Please try again.`,
+          variant: "destructive"
+        });
+      };
+
+      recognitionInstance.onend = () => {
+        if (isListening) {
+          recognitionInstance.start();
+        }
+      };
+      
+      setRecognition(recognitionInstance);
+    }
+    
+    return () => {
+      if (recognition) {
+        recognition.stop();
+      }
+    };
+  }, []);
+
   const sendMessageMutation = useMutation({
     mutationFn: async (content: string) => {
-      const response = await apiRequest("POST", `/api/conversations/${conversationId}/messages`, {
-        role: "user",
-        content
+      return await apiRequest(`/api/conversations/${conversationId}/messages`, {
+        method: "POST",
+        data: {
+          role: "user",
+          content
+        }
       });
-      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/conversations", conversationId, "messages"] });
@@ -49,6 +98,33 @@ export default function ChatInput({ conversationId, onUploadClick }: ChatInputPr
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
+    }
+  };
+
+  const toggleVoiceInput = () => {
+    if (!recognition) {
+      toast({
+        title: "Voice Input Not Supported",
+        description: "Your browser doesn't support voice recognition. Please try using a different browser like Chrome.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (isListening) {
+      recognition.stop();
+      setIsListening(false);
+      toast({
+        title: "Voice Input Stopped",
+        description: "Voice recognition has been turned off.",
+      });
+    } else {
+      recognition.start();
+      setIsListening(true);
+      toast({
+        title: "Voice Input Active",
+        description: "Speak now. Your voice will be converted to text.",
+      });
     }
   };
 
@@ -80,12 +156,13 @@ export default function ChatInput({ conversationId, onUploadClick }: ChatInputPr
                 </Button>
                 <Button
                   type="button"
-                  variant="ghost"
+                  variant={isListening ? "default" : "ghost"}
                   size="sm"
-                  className="p-1.5 h-auto text-gray-400 hover:text-gray-600"
+                  className={`p-1.5 h-auto ${isListening ? "bg-maritime-blue text-white" : "text-gray-400 hover:text-gray-600"}`}
+                  onClick={toggleVoiceInput}
                   data-testid="button-voice-input"
                 >
-                  <Mic className="w-4 h-4" />
+                  {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                 </Button>
               </div>
             </div>
@@ -94,6 +171,7 @@ export default function ChatInput({ conversationId, onUploadClick }: ChatInputPr
                 <span>Shift + Enter for new line</span>
                 <span>•</span>
                 <span>Supports file upload up to 10MB</span>
+                {isListening && <span className="text-maritime-blue font-medium">• Voice input active</span>}
               </div>
               <div className="text-xs text-gray-500">
                 <span data-testid="character-count">{message.length}</span>/2000 characters
@@ -113,4 +191,37 @@ export default function ChatInput({ conversationId, onUploadClick }: ChatInputPr
       </div>
     </div>
   );
+}
+
+// Add TypeScript declarations for the Web Speech API
+declare global {
+  interface Window {
+    SpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition: typeof SpeechRecognition;
+  }
+}
+
+// Define SpeechRecognition types if not available
+interface SpeechRecognitionErrorEvent extends Event {
+  error: string;
+}
+
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionResultList {
+  readonly length: number;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionResult {
+  readonly length: number;
+  [index: number]: SpeechRecognitionAlternative;
+  isFinal?: boolean;
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
 }

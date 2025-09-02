@@ -1,0 +1,175 @@
+[
+  {
+    "id": "kb_doc_1703123456789_abc123def_0",
+    "documentId": "doc_1703123456789_abc123def",
+    "title": "VESSEL PARTICULARS",
+    "content": "MV SEABIRD, IMO 9876543, Marshall Islands flag, built 2018, DWT 75,000 MT, GRT 45,230. Bulk carrier classed 100A1 at Lloyd's Register.",
+    "category": "general",
+    "relevanceScore": 0.36,
+    "tags": []
+  },
+  {
+    "id": "kb_doc_1703123456789_abc123def_1",
+    "documentId": "doc_1703123456789_abc123def",
+    "title": "CLAUSE 4: LAYTIME",
+    "content": "Laytime shall commence 6 hours after NOR is tendered or on vessel's arrival at berth, whichever occurs first. Loading: 36 running hours, Discharging: 36 running hours. Weather Working Days basis.",
+    "category": "laytime",
+    "relevanceScore": 0.43,
+    "tags": [
+      "vessel"
+    ]
+  },
+  {
+    "id": "kb_doc_1703123456789_abc123def_summary",
+    "documentId": "doc_1703123456789_abc123def",
+    "title": "CHARTER PARTY - GENCON_Charter_Party_MV_Seabird.pdf",
+    "content": "GENCON charter party for MV Seabird carrying 70,000 MT iron ore pellets from Port Hedland to Rotterdam. Key terms include 72 hours total laytime, USD 35,000/day demurrage, USD 42.50/MT freight rate.",
+    "category": "laytime",
+    "relevanceScore": 0.9,
+    "tags": [
+      "charter party",
+      "gencon",
+      "iron ore",
+      "laytime",
+      "demurrage"
+    ]
+  },
+  {
+    "id": "kb_doc_1703209876543_def456ghi_0",
+    "documentId": "doc_1703209876543_def456ghi",
+    "title": "CARGO DESCRIPTION",
+    "content": "Steel Coils, Hot Rolled in 20x40' HC containers, total weight 490.00 MT, container numbers GESU1234567-0 to GESU1234586-9",
+    "category": "general",
+    "relevanceScore": 0.35,
+    "tags": []
+  },
+  {
+    "id": "kb_doc_1703209876543_def456ghi_1",
+    "documentId": "doc_1703209876543_def456ghi",
+    "title": "TERMS AND CONDITIONS",
+    "content": "Subject to Hague-Visby Rules, delivery against original B/L, container seals by shipper, deck cargo at shipper's risk",
+    "category": "general",
+    "relevanceScore": 0.34,
+    "tags": [
+      "cargo"
+    ]
+  },
+  {
+    "id": "kb_doc_1703209876543_def456ghi_summary",
+    "documentId": "doc_1703209876543_def456ghi",
+    "title": "BILL OF_LADING - Bill_of_Lading_Hamburg_Shanghai.pdf",
+    "content": "Bill of Lading for 20x40' containers of steel coils from Hamburg to Shanghai aboard MV Ocean Pioneer. Total cargo 490 MT, freight prepaid USD 24,500.",
+    "category": "cp_clause",
+    "relevanceScore": 0.9,
+    "tags": [
+      "bill of lading",
+      "containers",
+      "steel coils",
+      "hamburg",
+      "shanghai"
+    ]
+  },
+  {
+    "id": "kb_doc_1703298765432_ghi789jkl_0",
+    "documentId": "doc_1703298765432_ghi789jkl",
+    "title": "ROUTE OPTIMIZATION ANALYSIS",
+    "content": "Southampton to New York, 3,150 NM, modified great circle to avoid severe weather, ETA Dec 20th",
+    "category": "weather",
+    "relevanceScore": 0.19,
+    "tags": []
+  },
+  {
+    "id": "kb_doc_1703298765432_ghi789jkl_1",
+    "documentId": "doc_1703298765432_ghi789jkl",
+    "title": "SAFETY RECOMMENDATIONS",
+    "content": "Monitor weather every 6 hours, reduce speed in seas >6m, secure cargo before Zone B, consider further south routing",
+    "category": "weather",
+    "relevanceScore": 0.3,
+    "tags": [
+      "cargo"
+    ]
+  },
+  {
+    "id": "kb_doc_1703298765432_ghi789jkl_summary",
+    "documentId": "doc_1703298765432_ghi789jkl",
+    "title": "WEATHER REPORT - Weather_Routing_Report_North_Atlantic.pdf",
+    "content": "Weather routing report for MV Atlantic Voyager crossing North Atlantic. Recommends modified route 50NM south of great circle to avoid severe weather system with 45-knot winds Dec 14-16.",
+    "category": "laytime",
+    "relevanceScore": 0.9,
+    "tags": [
+      "weather routing",
+      "north atlantic",
+      "storm",
+      "wind",
+      "routing"
+    ]
+  },
+  {
+    "id": "kb_doc_1703387654321_jkl012mno_0",
+    "documentId": "doc_1703387654321_jkl012mno",
+    "title": "LOADING CALCULATIONS",
+    "content": "Oslo loading: NOR 18th Dec 08:30, commenced 15:15, completed 20th Dec 14:30, used 47h 15m of 48h allowed, saved 45 minutes",
+    "category": "laytime",
+    "relevanceScore": 0.28,
+    "tags": []
+  },
+  {
+    "id": "kb_doc_1703387654321_jkl012mno_1",
+    "documentId": "doc_1703387654321_jkl012mno",
+    "title": "DEMURRAGE CALCULATION",
+    "content": "Net demurrage 9.5 hours at USD 28,000/day = USD 11,083.33, payment due within 30 days per charter party",
+    "category": "laytime",
+    "relevanceScore": 0.19,
+    "tags": []
+  },
+  {
+    "id": "kb_doc_1703387654321_jkl012mno_summary",
+    "documentId": "doc_1703387654321_jkl012mno",
+    "title": "LAYTIME CALCULATION - Laytime_Statement_MV_Nordic_Star.pdf",
+    "content": "Laytime statement for MV Nordic Star carrying wheat from Oslo to Alexandria. Net demurrage of 9.5 hours resulted in USD 11,083.33 due to discharging delays.",
+    "category": "laytime",
+    "relevanceScore": 0.9,
+    "tags": [
+      "laytime",
+      "demurrage",
+      "wheat",
+      "oslo",
+      "alexandria"
+    ]
+  },
+  {
+    "id": "kb_doc_1703476543210_mno345pqr_0",
+    "documentId": "doc_1703476543210_mno345pqr",
+    "title": "ARRIVAL PROCEDURES",
+    "content": "ETA messages at 72/48/24 hours, contact Port Control Ch 12 at 12 miles, pilot boarding at Alpha station, clearance at berth",
+    "category": "voyage_guidance",
+    "relevanceScore": 0.39,
+    "tags": [
+      "port"
+    ]
+  },
+  {
+    "id": "kb_doc_1703476543210_mno345pqr_1",
+    "documentId": "doc_1703476543210_mno345pqr",
+    "title": "LOCAL REGULATIONS",
+    "content": "UAE Immigration requirements, zero tolerance drugs/alcohol, no pork articles, restricted photography, crew remain aboard",
+    "category": "general",
+    "relevanceScore": 0.34,
+    "tags": []
+  },
+  {
+    "id": "kb_doc_1703476543210_mno345pqr_summary",
+    "documentId": "doc_1703476543210_mno345pqr",
+    "title": "VOYAGE INSTRUCTIONS - Port_Instructions_Dubai.pdf",
+    "content": "Port instructions for MV Desert Wind arriving Dubai Jebel Ali Terminal 2. Covers arrival procedures, berth details, cargo operations, required documentation, and local regulations.",
+    "category": "weather",
+    "relevanceScore": 0.9,
+    "tags": [
+      "port instructions",
+      "dubai",
+      "jebel ali",
+      "pilot",
+      "berth"
+    ]
+  }
+]
